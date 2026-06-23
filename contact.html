@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Research Lab</title>
+  <meta name="description" content="Get in touch with our research group. Find contact information, office location.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <main class="contact-page">
+    <div class="container">
+      <header class="page-header">
+        <h1>Contact Us</h1>
+        <p>Get in touch with our research group</p>
+      </header>
+
+      <div style="max-width: 600px; margin: 0 auto var(--space-3xl);">
+        <!-- Contact Info Card (Centered) -->
+        <div class="glass-card contact-info-card reveal" id="contactInfoCard" style="padding: var(--space-2xl);">
+          <h3>Get in Touch</h3>
+          <div id="contactItems"></div>
+          <div id="socialLinks"></div>
+        </div>
+      </div>
+
+      <!-- Map Container (shown only if mapEmbedUrl is configured) -->
+      <div class="map-container reveal" id="mapContainer" style="display: none;">
+        <iframe id="mapIframe" title="Lab Location" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/sheets.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    (function () {
+      // --- Render layout ---
+      renderLayout('contact.html');
+
+      // --- Populate contact items ---
+      const contactItemsEl = document.getElementById('contactItems');
+      const contactData = [
+        { icon: '📧', label: 'Email',   value: LAB_CONFIG.contact.email,   href: 'mailto:' + LAB_CONFIG.contact.email },
+        { icon: '📞', label: 'Phone',   value: LAB_CONFIG.contact.phone },
+        { icon: '📍', label: 'Address', value: LAB_CONFIG.contact.address }
+      ];
+
+      contactItemsEl.innerHTML = contactData.map(function (item) {
+        const valueHTML = item.href
+          ? '<a href="' + item.href + '">' + item.value + '</a>'
+          : item.value;
+        return `
+          <div class="contact-item">
+            <div class="contact-icon">${item.icon}</div>
+            <div>
+              <div class="contact-label">${item.label}</div>
+              <div class="contact-value">${valueHTML}</div>
+            </div>
+          </div>`;
+      }).join('');
+
+      // --- Populate social links ---
+      const socialLinksEl = document.getElementById('socialLinks');
+      const socialConfig = LAB_CONFIG.social || {};
+      const socialEntries = [
+        { key: 'googleScholar', label: '🎓 Google Scholar' },
+        { key: 'github',        label: '💻 GitHub' },
+        { key: 'twitter',       label: '🐦 Twitter' },
+        { key: 'linkedin',      label: '💼 LinkedIn' }
+      ].filter(function (s) { return socialConfig[s.key]; });
+
+      if (socialEntries.length > 0) {
+        socialLinksEl.innerHTML =
+          '<h4 style="margin-top:var(--space-xl);margin-bottom:var(--space-md);font-size:0.95rem;">Follow Us</h4>' +
+          '<div class="social-links">' +
+          socialEntries.map(function (s) {
+            return '<a href="' + socialConfig[s.key] + '" target="_blank" rel="noopener noreferrer" class="btn btn-icon" title="' + s.label + '">' + s.label.split(' ')[0] + '</a>';
+          }).join('') +
+          '</div>';
+      }
+
+      // --- Map ---
+      var mapUrl = LAB_CONFIG.contact.mapEmbedUrl;
+      if (mapUrl) {
+        var mapContainer = document.getElementById('mapContainer');
+        mapContainer.style.display = '';
+        document.getElementById('mapIframe').src = mapUrl;
+      }
+
+      // --- Scroll reveal ---
+      initScrollReveal();
+    })();
+  </script>
+</body>
+</html>

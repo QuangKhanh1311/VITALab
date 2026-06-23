@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications — Research Lab</title>
+  <meta name="description" content="Our research contributions to the scientific community. Browse our published journal articles, conference papers, preprints, and book chapters.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <main class="publications-page">
+    <div class="container">
+
+      <!-- Page Header -->
+      <header class="page-header">
+        <h1>Publications</h1>
+        <p>Our research contributions to the scientific community</p>
+      </header>
+
+      <!-- Search & Filters -->
+      <div class="search-filters">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search by title, author, or keyword...">
+        </div>
+        <select class="filter-select" id="yearFilter">
+          <option value="all">All Years</option>
+        </select>
+        <select class="filter-select" id="typeFilter">
+          <option value="all">All Types</option>
+          <option value="journal">Journal</option>
+          <option value="conference">Conference</option>
+          <option value="preprint">Preprint</option>
+          <option value="book chapter">Book Chapter</option>
+        </select>
+      </div>
+
+      <!-- Results Count -->
+      <div id="resultsCount" class="results-count"></div>
+
+      <!-- Publications List -->
+      <div id="publicationsList" class="publications-list"></div>
+
+    </div>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/sheets.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/publications.js"></script>
+</body>
+</html>
