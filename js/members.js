@@ -5,6 +5,28 @@
 (function () {
   'use strict';
 
+  /* ---- Bio Thought Bubble ---- */
+  function buildBioBubble(bio) {
+    if (!bio || !bio.trim()) return '';
+    return `<div class="bio-thought-bubble">
+      <div class="thought-cloud">
+        <span class="cloud-bump cb1"></span>
+        <span class="cloud-bump cb2"></span>
+        <span class="cloud-bump cb3"></span>
+        <span class="cloud-bump cb4"></span>
+        <span class="cloud-bump cb5"></span>
+        <span class="cloud-bump cb6"></span>
+        <div class="bubble-text">${escapeHTML(bio)}</div>
+      </div>
+      <div class="thought-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>`;
+  }
+
+
+
+
   const ROLE_PRIORITY = {
     'principal investigator': 1,
     'postdoc': 2,
@@ -59,7 +81,11 @@
     const role = escapeHTML(member.role || '');
     const title = escapeHTML(member.title || '');
     const bio = escapeHTML(member.bio || '');
+    const rawBio = member.bio || '';
     const photoUrl = cleanGoogleDriveUrl((member.photo || member.photo_url || '').trim());
+
+    // Build speech bubble from bio (shown above avatar)
+    const bubbleHTML = buildBioBubble(rawBio);
 
     let photoHTML;
     if (photoUrl) {
@@ -93,7 +119,10 @@
 
     return `
       <div class="member-card glass-card reveal" data-name="${name}" style="cursor: pointer;">
-        ${photoHTML}
+        <div class="member-avatar-area">
+          ${bubbleHTML}
+          ${photoHTML}
+        </div>
         <h3>${name}</h3>
         <div class="member-role">${role}</div>
         ${title ? `<div class="member-title">${title}</div>` : ''}
@@ -112,18 +141,40 @@
       'Alumni': []
     };
 
+    // Map section values to category keys
+    const SECTION_MAP = {
+      'staff': 'Staff',
+      'principal investigator': 'Staff',
+      'pi': 'Staff',
+      'postdoc': 'Staff',
+      'phd student': 'PhD Student',
+      'phd': 'PhD Student',
+      'master student': 'Masters Student',
+      'master': 'Masters Student',
+      'masters': 'Masters Student',
+      'undergraduate': 'Undergraduate Student',
+      'undergrad': 'Undergraduate Student',
+      'alumni': 'Alumni'
+    };
+
     members.forEach(member => {
-      const role = (member.role || '').toLowerCase();
-      if (role.includes('pi') || role.includes('postdoc') || role.includes('researcher') || role.includes('staff') || role.includes('professor') || role.includes('investigator')) {
-        categories['Staff'].push(member);
-      } else if (role.includes('phd')) {
-        categories['PhD Student'].push(member);
-      } else if (role.includes('master') || role.includes('ms') || role.includes('m.s.')) {
-        categories['Masters Student'].push(member);
-      } else if (role.includes('alumni')) {
-        categories['Alumni'].push(member);
+      const section = (member.section || '').toLowerCase().trim();
+      const matched = SECTION_MAP[section];
+      if (matched) {
+        categories[matched].push(member);
       } else {
-        categories['Undergraduate Student'].push(member);
+        // Fallback: try partial matching
+        let placed = false;
+        for (const [key, cat] of Object.entries(SECTION_MAP)) {
+          if (section.includes(key)) {
+            categories[cat].push(member);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) {
+          categories['Undergraduate Student'].push(member);
+        }
       }
     });
 
@@ -153,8 +204,8 @@
       renderMembers(allMembers, container);
     } else {
       const filtered = allMembers.filter(member => {
-        const role = (member.role || '').toLowerCase();
-        return role.includes(currentFilter);
+        const section = (member.section || '').toLowerCase();
+        return section.includes(currentFilter);
       });
       if (filtered.length === 0) {
         showEmptyState(container, '👥', 'No Members Found', `No members found matching "${currentFilter}".`);

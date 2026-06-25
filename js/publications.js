@@ -204,7 +204,7 @@
     if (!modal) {
       modal = document.createElement('div');
       modal.id = 'pubDetailModal';
-      modal.className = 'member-modal';
+      modal.className = 'member-modal pub-modal';
       modal.innerHTML = `
         <div class="member-modal-overlay"></div>
         <div class="member-modal-wrapper">

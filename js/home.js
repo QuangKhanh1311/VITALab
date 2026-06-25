@@ -184,13 +184,16 @@
   /* ------------------------------------------
      4. Stats Animation Setup
      ------------------------------------------ */
-  function initStatsAnimation() {
+  function initStatsAnimation(membersCount, pubsCount) {
     const statsSection = document.getElementById('heroStats');
     if (!statsSection) return;
 
+    updateStatTarget('statMembers', membersCount);
+    updateStatTarget('statPublications', pubsCount);
+
     const items = [
-      { id: 'statMembers', value: 15 },
-      { id: 'statPublications', value: 50 }
+      { id: 'statMembers', value: membersCount },
+      { id: 'statPublications', value: pubsCount }
     ];
 
     const observer = new IntersectionObserver(function (entries) {
@@ -198,9 +201,7 @@
         items.forEach(function (item) {
           const el = document.getElementById(item.id);
           if (el) {
-            const targetAttr = el.getAttribute('data-target');
-            const target = (targetAttr !== null && targetAttr !== '0') ? parseInt(targetAttr, 10) : item.value;
-            animateCountUp(el, target, 2000);
+            animateCountUp(el, item.value, 2000);
           }
         });
         observer.unobserve(statsSection);
@@ -221,7 +222,13 @@
      5. Load data and populate stats
      ------------------------------------------ */
   async function loadDataForStats() {
-    if (!isSheetsConfigured()) return;
+    const defaultMembers = 15;
+    const defaultPubs = 50;
+
+    if (!isSheetsConfigured()) {
+      initStatsAnimation(defaultMembers, defaultPubs);
+      return;
+    }
 
     try {
       const [members, pubs] = await Promise.all([
@@ -229,20 +236,10 @@
         fetchPublications()
       ]);
 
-      updateStatTarget('statMembers', members.length);
-      updateStatTarget('statPublications', pubs.length);
-
-      // If data loading finishes after animation has already run, re-animate to correct values
-      const statMembersEl = document.getElementById('statMembers');
-      const statPublicationsEl = document.getElementById('statPublications');
-      if (statMembersEl && statMembersEl.textContent !== String(members.length)) {
-        animateCountUp(statMembersEl, members.length, 1000);
-      }
-      if (statPublicationsEl && statPublicationsEl.textContent !== String(pubs.length)) {
-        animateCountUp(statPublicationsEl, pubs.length, 1000);
-      }
+      initStatsAnimation(members.length, pubs.length);
     } catch (err) {
       console.error('Failed to load stats data:', err);
+      initStatsAnimation(defaultMembers, defaultPubs);
     }
   }
 
@@ -253,7 +250,6 @@
   renderHeroContent();
   loadTeamPreview();
   loadDataForStats();
-  initStatsAnimation();
 
   // Layout & navigation
   renderLayout('index.html');

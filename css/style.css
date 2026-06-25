@@ -6,7 +6,23 @@
    ============================================ */
 
 /* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Coiny&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* --- Custom Fonts --- */
+@font-face {
+  font-family: 'LazyDog';
+  src: url('../assets/lazy_dog.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.brand-font {
+  font-family: 'LazyDog', 'Inter', sans-serif;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 
 /* --- CSS Custom Properties (Design Tokens) --- */
 :root {
@@ -244,11 +260,19 @@ p {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  font-size: 1.3rem;
-  font-family: 'Coiny', cursive;
+  font-size: 1.6rem;
+  font-family: 'LazyDog', 'Inter', sans-serif;
+  font-weight: bold;
   letter-spacing: 0.05em;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.nav-logo img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .nav-logo .logo-vita {
@@ -268,7 +292,7 @@ p {
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
-  font-family: 'Coiny', cursive;
+  font-family: 'LazyDog', 'Inter', sans-serif;
   color: white;
   flex-shrink: 0;
 }
@@ -390,7 +414,8 @@ p {
 .hero h1 {
   margin-bottom: var(--space-lg);
   animation: fadeInUp 0.6s ease-out 0.1s both;
-  font-family: 'Coiny', cursive;
+  font-family: 'LazyDog', 'Inter', sans-serif;
+  font-weight: bold;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -695,21 +720,32 @@ p {
 
 .members-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--space-xl);
 }
 
 .member-card {
   text-align: center;
-  padding: var(--space-2xl) var(--space-xl);
+  padding: var(--space-xl) var(--space-md);
+  overflow: visible !important;
+  max-width: 240px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Avatar area — anchor for thought bubble */
+.member-avatar-area {
+  position: relative;
+  display: inline-block;
+  margin-bottom: var(--space-lg);
 }
 
 .member-card .member-photo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  border-radius: 16px;
   object-fit: cover;
-  margin: 0 auto var(--space-lg);
+  display: block;
   border: 3px solid var(--border-light);
   transition: all var(--transition-base);
 }
@@ -718,6 +754,106 @@ p {
   border-color: var(--primary);
   box-shadow: var(--shadow-md);
 }
+
+/* --- Bio Thought Bubble (hover to show, anchored to avatar) --- */
+.bio-thought-bubble {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  z-index: 20;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 3px rgba(18, 72, 116, 0.18))
+          drop-shadow(0 4px 16px rgba(18, 72, 116, 0.10));
+}
+
+.member-card:hover .bio-thought-bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* Cloud body */
+.thought-cloud {
+  position: relative;
+  background: #fff;
+  border-radius: 24px;
+  padding: 14px 20px;
+  min-width: 260px;
+  max-width: 360px;
+  width: max-content;
+}
+
+/* Cloud bumps */
+.cloud-bump {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.cloud-bump.cb1 {
+  width: 44px; height: 36px;
+  top: -14px; left: 12%;
+}
+.cloud-bump.cb2 {
+  width: 52px; height: 38px;
+  top: -17px; left: 38%;
+}
+.cloud-bump.cb3 {
+  width: 42px; height: 34px;
+  top: -12px; right: 10%;
+}
+.cloud-bump.cb4 {
+  width: 34px; height: 30px;
+  bottom: -11px; left: 18%;
+}
+.cloud-bump.cb5 {
+  width: 44px; height: 32px;
+  bottom: -13px; right: 20%;
+}
+.cloud-bump.cb6 {
+  width: 30px; height: 28px;
+  top: 25%; left: -12px;
+}
+
+/* Trailing thought dots */
+.thought-dots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+  gap: 3px;
+}
+
+.thought-dots span {
+  display: block;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.thought-dots span:nth-child(1) { width: 14px; height: 14px; }
+.thought-dots span:nth-child(2) { width: 9px;  height: 9px; }
+.thought-dots span:nth-child(3) { width: 5px;  height: 5px; }
+
+/* Bio text inside the cloud */
+.bubble-text {
+  position: relative;
+  z-index: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 
 .member-card .member-name {
   font-size: 1.1rem;
@@ -764,16 +900,15 @@ p {
 
 /* Default avatar placeholder */
 .member-card .member-photo-placeholder {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  margin: 0 auto var(--space-lg);
+  width: 150px;
+  height: 150px;
+  border-radius: 16px;
   border: 3px solid var(--border-light);
   background: linear-gradient(135deg, var(--primary-glass-strong), var(--bg-tertiary));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   color: var(--primary);
   transition: all var(--transition-base);
 }
@@ -1411,7 +1546,7 @@ p {
   }
 
   .members-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 
   .search-filters {
@@ -1644,6 +1779,10 @@ p {
 }
 
 /* Publication modal extras */
+.pub-modal .member-modal-wrapper {
+  max-width: 950px;
+}
+
 .pub-modal-authors {
   font-size: 0.9rem;
   color: var(--text-secondary);
@@ -1667,6 +1806,7 @@ p {
   padding: var(--space-lg);
   border-left: 3px solid var(--primary);
   margin-top: var(--space-sm);
+  text-align: justify;
 }
 
 .pub-modal-model-img {

@@ -132,7 +132,7 @@ function getNavHTML() {
     <nav class="navbar" id="navbar">
       <div class="container">
         <a href="index.html" class="nav-logo">
-          <img src="VITAlogo.png" alt="VITA Lab" style="height: 36px; width: auto; object-fit: contain;">
+          <img src="VITAlogo.png?v=1.1" alt="VITA Lab">
           <span class="logo-text"><span class="logo-vita">VITA</span> <span class="logo-lab">LAB</span></span>
         </a>
         <div class="nav-links" id="navLinks">
